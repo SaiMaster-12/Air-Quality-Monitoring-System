@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQMS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            position: relative;
+        }
+        .predict-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .predict-button:hover {
+            background-color: #064374;
+        }
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .chart-container img {
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .message-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #0d47a1;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Air Quality Monitoring System</h1>
+        <button class="predict-button" onclick="location.href='/predict'">Predict</button>
+        
+        <div class="chart-container">
+            <div>
+                <h2>CO2 Levels</h2>
+                <img id="co2_plot" src="" alt="CO2 Levels">
+                <div class="message-box" id="air_quality_message">
+                    <!-- Air quality message will be displayed here -->
+                </div>
+            </div>
+            <h2>Temperature (°C)</h2>
+            <img id="temp_c_plot" src="" alt="Temperature (°C)">
+            
+            <h2>Temperature (°F)</h2>
+            <img id="temp_f_plot" src="" alt="Temperature (°F)">
+            
+            <h2>Humidity Levels</h2>
+            <img id="humidity_plot" src="" alt="Humidity Levels">
+            
+            <h2>Atmospheric Pressure</h2>
+            <img id="pressure_plot" src="" alt="Atmospheric Pressure">
+        </div>
+    </div>
+
+    <script>
+        const evtSource = new EventSource("/data");
+
+        evtSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            document.getElementById('co2_plot').src = 'data:image/png;base64,' + data.co2_plot;
+            document.getElementById('temp_c_plot').src = 'data:image/png;base64,' + data.temp_c_plot;
+            document.getElementById('temp_f_plot').src = 'data:image/png;base64,' + data.temp_f_plot;
+            document.getElementById('humidity_plot').src = 'data:image/png;base64,' + data.humidity_plot;
+            document.getElementById('pressure_plot').src = 'data:image/png;base64,' + data.pressure_plot;
+            document.getElementById('air_quality_message').innerText = data.air_quality_message;
+        };
+    </script>
+</body>
+</html>
